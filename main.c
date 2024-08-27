@@ -266,14 +266,15 @@ void tabsh_loop(void)
     char cwd[PATH_MAX];
     getcwd(cwd, sizeof(cwd));
     printf("[%s@%s]: %s >", un, hn, cwd);
+    free(un);
+    free(hn);
     line = tabsh_rl();
     args = tabsh_split_line(line);
     status = tabsh_execute(args);
 
     free(line);
     free(args);
-    free(un);
-    free(hn);
+    
   } while (status);
 }
 int main() {
