@@ -3,13 +3,17 @@
 #include <string.h>
 #include <unistd.h>
 #include <sys/wait.h>
-
+#include <linux/limits.h>
 #define TOKEN_BUFSIZE 64
 #define TOKEN_DELIM " \t\r\n\a"
+#define VERSION 1.0.0-alpha
+
 
 /*
   Beautiful Built-Ins
 */
+
+
 
 int tabsh_cd(char **args);
 int tabsh_help(char **args);
@@ -47,8 +51,9 @@ int tabsh_cd(char **args)
   }
   return 1;
 }
-
+// Environment variable management
 int tabsh_env(char **args) {
+  
   if (args[1] == NULL) {
     fprintf(stderr, "!! Built-In Error !!: expected argument to \"env\"\n");
     return 1;
@@ -62,13 +67,27 @@ int tabsh_env(char **args) {
         if (args[3] == NULL) {
           fprintf(stderr, "!! Built-In Error !!: you cannot assign an empty value; please try \"env delete [NAME]\" instead.\n");
           return 1;
+        } else {
+          if (setenv(args[2],args[3],1) !=0) {
+            fprintf(stderr, "!! Built-In Error !!: Failed to set env variable.");
+            return 1;
+          } else {
+            printf("Successfully set env variable %s to %s.\n", args[2],args[3]);
+            return 1;
+          }
         }
+          
       }
   } else if (strcmp("del", args[1]) == 0) {
     if (args[2] == NULL ) {
       fprintf(stderr, "!! Built-In Error !!: Cannot delete non-existent variable.\n");
       return 1;
-    } 
+      
+    } else {
+      unsetenv(args[2]);
+      return 1;
+      
+    }
   } else if (strcmp("print", args[1]) == 0) {
     if (args[2] == NULL) {
       fprintf(stderr, "!! Built-In Error !!: Cannot print non-existent variable.\n");
@@ -88,6 +107,11 @@ int tabsh_env(char **args) {
         return 1;
       }
     }
+    /* else statement to contain any nonexistent commands, and to handle if a nonexistent command is sent. */
+  } else {
+    fprintf(stderr, "!! Built-In Error !!: Invalid command.\n");
+    return 1;
+    
   }
  return 0;         
 }
@@ -178,6 +202,7 @@ char **tabsh_split_line(char *line) {
 int tabsh_launch(char **args) {
   pid_t pid, wpid;
   int status;
+  
 
 
   pid = fork();
@@ -220,14 +245,27 @@ int tabsh_execute(char **args)
 
 void tabsh_loop(void)
 {
+  
   char *line;
   char **args;
   int status;
   ssize_t size= 0;
-  
+
+    
 
   do {
-    printf("> ");
+    char* hn;
+    char* un;
+    hn = getenv("HOSTNAME");
+    un = getenv("USER");
+    strdup(un);
+    strdup(hn);
+    
+    
+    
+    char cwd[PATH_MAX];
+    getcwd(cwd, sizeof(cwd));
+    printf("[%s@%s]: %s >", un, hn, cwd);
     line = tabsh_rl();
     args = tabsh_split_line(line);
     status = tabsh_execute(args);
@@ -237,6 +275,7 @@ void tabsh_loop(void)
   } while (status);
 }
 int main() {
+  printf("warning: this is early development software!\nPrepare for bugs, missing features, and other nasty things.\n \033[1m \033[31m          YOU HAVE BEEN WARNED! \033[37m \033[0m \n");
   tabsh_loop();
   return 0;
 }

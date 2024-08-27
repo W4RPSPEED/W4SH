@@ -1,6 +1,6 @@
 # Prerequisites
 *.d
-
+.ccls-cache
 # Object files
 *.o
 *.ko
@@ -50,3 +50,5 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+.replit
+replit.nix
