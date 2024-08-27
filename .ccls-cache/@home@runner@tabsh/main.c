@@ -250,11 +250,12 @@ void tabsh_loop(void)
   char **args;
   int status;
   ssize_t size= 0;
-  char* hn;
-  char* un;
+  
     
 
   do {
+    char* hn;
+    char* un;
     
     hn = getenv("HOSTNAME");
     un = getenv("USER");
@@ -266,14 +267,14 @@ void tabsh_loop(void)
     char cwd[PATH_MAX];
     getcwd(cwd, sizeof(cwd));
     printf("[%s@%s]: %s >", un, hn, cwd);
-    free(un);
-    free(hn);
     line = tabsh_rl();
     args = tabsh_split_line(line);
     status = tabsh_execute(args);
 
     free(line);
     free(args);
+    free(un);
+    free(hn);
     
   } while (status);
 }
