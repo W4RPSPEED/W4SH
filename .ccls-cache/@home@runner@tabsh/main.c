@@ -250,12 +250,12 @@ void tabsh_loop(void)
   char **args;
   int status;
   ssize_t size= 0;
-
+  char* hn;
+  char* un;
     
 
   do {
-    char* hn;
-    char* un;
+    
     hn = getenv("HOSTNAME");
     un = getenv("USER");
     strdup(un);
