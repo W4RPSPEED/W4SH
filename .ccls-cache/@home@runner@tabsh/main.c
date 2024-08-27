@@ -250,17 +250,17 @@ void tabsh_loop(void)
   char **args;
   int status;
   ssize_t size= 0;
-  
+  char* hn;
+  char* un;
+
+  hn = getenv("HOSTNAME");
+  un = getenv("USER");
+  strdup(un);
+  strdup(hn);
     
 
   do {
-    char* hn;
-    char* un;
     
-    hn = getenv("HOSTNAME");
-    un = getenv("USER");
-    strdup(un);
-    strdup(hn);
     
     
     
@@ -273,13 +273,16 @@ void tabsh_loop(void)
 
     free(line);
     free(args);
-    free(un);
-    free(hn);
+    
     
   } while (status);
+
+  free(un);
+  free(hn);
 }
 int main() {
   printf("warning: this is early development software!\nPrepare for bugs, missing features, and other nasty things.\n \033[1m \033[31m          YOU HAVE BEEN WARNED! \033[37m \033[0m \n");
   tabsh_loop();
+  
   return 0;
 }
