@@ -272,6 +272,8 @@ void tabsh_loop(void)
 
     free(line);
     free(args);
+    free(un);
+    free(hn);
   } while (status);
 }
 int main() {
