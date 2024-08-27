@@ -98,7 +98,7 @@ int tabsh_env(char **args) {
 int tabsh_help(char **args)
 {
   int i;
-  printf("tabsh, developed by kasen engel\n");
+  printf("tabsh, developed by TabbySlimeKing.\n");
   printf("Somewhat based on Stephan Brennan's lsh!\n");
   printf("Type program names and arguments, and hit enter.\n");
   printf("The following are built in:\n");
