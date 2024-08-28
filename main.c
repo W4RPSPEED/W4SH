@@ -269,9 +269,11 @@ void tabsh_loop(void)
     fprintf(stderr, "!! Fatal Error !!: Cannot fetch hostname! Exiting.");
     exit(1);
   
-  }
-  strdup(un);
-  strdup(hn);
+  } else {
+    strdup(un);
+    strdup(hn);
+    }
+  
     
 
   do {

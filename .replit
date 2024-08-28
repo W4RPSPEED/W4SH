@@ -1,5 +1,5 @@
 compile = ["make", "-s"]
-run = "./main"
+run = "./tabsh"
 entrypoint = "main.c"
 hidden = ["main", "main-debug", "**/*.o", "**/*.d", ".ccls-cache", "Makefile"]
 
