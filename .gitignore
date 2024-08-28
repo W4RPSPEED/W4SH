@@ -7,7 +7,7 @@
 *.obj
 *.elf
 main
-
+tabsh
 # Linker output
 *.ilk
 *.map

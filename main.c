@@ -256,16 +256,19 @@ void tabsh_loop(void)
   char **args;
   int status;
   ssize_t size= 0;
-  char* hn;
+  
   char* un;
+  char hn[1024];
+  hn[1023] = '\0';
+  gethostname(hn, 1023);
 
-  hn = getenv("HOSTNAME");
+  
   un = getenv("USER");
 
   if (un == NULL) {
     fprintf(stderr, "!! Fatal Error !!: Cannot fetch username! Exiting.");
     exit(1);
-  } else if (hn == NULL) {
+  } else if (&hn[0] == NULL) {
     fprintf(stderr, "!! Fatal Error !!: Cannot fetch hostname! Exiting.");
     exit(1);
   
