@@ -6,7 +6,7 @@
 #include <linux/limits.h>
 #define TOKEN_BUFSIZE 64
 #define TOKEN_DELIM " \t\r\n\a"
-#define VERSION 1.0.0-alpha
+#define VERSION "1.0.0-alpha"
 
 
 /*
@@ -132,6 +132,7 @@ int tabsh_help(char **args)
   }
 
   printf("Use the man command for information on other programs.\n");
+  printf("%s\n", VERSION);
   return 1;
 }
 
@@ -147,6 +148,8 @@ char *tabsh_rl() {
   char *string = NULL;
   size_t size = 0;
   ssize_t chars_read;
+
+
 
 
   //Getting some LONG strings safely to prevent buffer overflowing.
@@ -165,7 +168,10 @@ char *tabsh_rl() {
   
 }
 
-
+char tabsh_pipe(void) {
+   
+  
+}
 
 char **tabsh_split_line(char *line) {
   int size = TOKEN_BUFSIZE, position = 0;
@@ -255,6 +261,15 @@ void tabsh_loop(void)
 
   hn = getenv("HOSTNAME");
   un = getenv("USER");
+
+  if (un == NULL) {
+    fprintf(stderr, "!! Fatal Error !!: Cannot fetch username! Exiting.");
+    exit(1);
+  } else if (hn == NULL) {
+    fprintf(stderr, "!! Fatal Error !!: Cannot fetch hostname! Exiting.");
+    exit(1);
+  
+  }
   strdup(un);
   strdup(hn);
     
