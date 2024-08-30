@@ -2,6 +2,7 @@ compile = ["make", "-s"]
 run = "./tabsh"
 entrypoint = "main.c"
 hidden = ["main", "main-debug", "**/*.o", "**/*.d", ".ccls-cache", "Makefile"]
+modules = ["c-clang14"]
 
 [nix]
 channel = "stable-24_05"

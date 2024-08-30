@@ -1,5 +1,6 @@
 { pkgs }: {
 	deps = [
+   pkgs.cmake
    pkgs.openssh
 		pkgs.clang
 		pkgs.ccls

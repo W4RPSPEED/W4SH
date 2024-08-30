@@ -4,6 +4,7 @@
 #include <unistd.h>
 #include <sys/wait.h>
 #include <linux/limits.h>
+
 #define TOKEN_BUFSIZE 64
 #define TOKEN_DELIM " \t\r\n\a"
 #define VERSION "1.0.0-alpha"
@@ -13,24 +14,30 @@
   Beautiful Built-Ins
 */
 
-
-
+// Have to forward declare all of the built ins as I have to reference them before i define them.
+int tabsh_back(char **args);
 int tabsh_cd(char **args);
 int tabsh_help(char **args);
 int tabsh_exit(char **args);
 int tabsh_env( char **args);
+int tabsh_fetch(char **args);
 char *builtin_str[] = {
   "cd",
   "help",
   "exit",
-  "env"
+  "env",
+  "back",
+  "fetch"
+
 };
 
 int (*builtin_func[]) (char **) = {
   &tabsh_cd,
   &tabsh_help,
   &tabsh_exit,
-  &tabsh_env
+  &tabsh_env,
+  &tabsh_back,
+  &tabsh_fetch, 
 };
 
 int tabsh_num_builtins() {
@@ -40,11 +47,51 @@ int tabsh_num_builtins() {
 /*
   Builtin function implementations.
 */
+char prevwd[PATH_MAX]; /* I have this globally because i want to be able to always store the previous working
+directory for the `back` command */
+
+int tabsh_back(char **args) {
+  if (args[1] != NULL) {
+    fprintf(stderr, "!! Built-In Error !!: unexpected argument to \"back\"\n");
+    return 1;
+    /* If I'm gonna be for real with you here, I have no idea why exactly it has to return one to return to the shell, and I am perfectly content with not knowing, so it stays this way. */
+  } else {
+    chdir(prevwd);
+    return 1;
+  }
+}
+int tabsh_fetch(char **args) {
+  // Opening file
+  FILE *file_ptr;
+
+  // Character buffer that stores the read character
+  // till the next iteration
+  char ch;
+
+  // Opening file in reading mode
+  file_ptr = fopen("asc.ii", "r");
+
+  if (NULL == file_ptr) {
+      printf("file can't be opened \n");
+        return 1;
+  }
+
+  printf("Content of the file are:-: \n");
+
+  // Printing what is written in file
+  // character by character using loop.
+  while ((ch = fgetc(file_ptr)) != EOF) {
+      printf("%c", ch);
+  }
+  return 1;
+}
 int tabsh_cd(char **args)
 {
   if (args[1] == NULL) {
     fprintf(stderr, "!! Built-In Error !!: expected argument to \"cd\"\n");
   } else {
+    
+    getcwd(prevwd, sizeof(prevwd));
     if (chdir(args[1]) != 0) {
       perror("tabsh");
     }
@@ -140,6 +187,8 @@ int tabsh_exit(char **args)
 {
   return 0;
 }
+
+
 
 
 
@@ -265,16 +314,20 @@ void tabsh_loop(void)
   
   un = getenv("USER");
 
-  if (un == NULL) {
-    fprintf(stderr, "!! Fatal Error !!: Cannot fetch username! Exiting.");
-    exit(1);
+  if (un == NULL) { 
+    /* This is here to prevent a buffer overflow just in case it cant fetch UN/HN. 
+    TODO: substitute null value with placeholder instead of exiting */
+    fprintf(stderr, "!! Fatal Error !!: Cannot fetch username! Utilizing placeholder instead.\n");
+    
+    un = "???";
   } else if (&hn[0] == NULL) {
-    fprintf(stderr, "!! Fatal Error !!: Cannot fetch hostname! Exiting.");
-    exit(1);
+    fprintf(stderr, "!! Fatal Error !!: Cannot fetch hostname! Utilizing placeholder instead.\n");
+    
   
   } else {
     strdup(un);
     strdup(hn);
+    
     }
   
     
@@ -285,8 +338,10 @@ void tabsh_loop(void)
     
     
     char cwd[PATH_MAX];
-    getcwd(cwd, sizeof(cwd));
-    printf("[%s@%s]: %s >", un, hn, cwd);
+    if (getcwd(cwd, sizeof(cwd)) != 0) {
+      fprintf(stderr, "");
+    }
+    printf("[%s@%s]: %s > ", un, hn, cwd);
     line = tabsh_rl();
     args = tabsh_split_line(line);
     status = tabsh_execute(args);
