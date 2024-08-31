@@ -20,15 +20,13 @@ int tabsh_cd(char **args);
 int tabsh_help(char **args);
 int tabsh_exit(char **args);
 int tabsh_env( char **args);
-int tabsh_fetch(char **args);
+
 char *builtin_str[] = {
   "cd",
   "help",
   "exit",
   "env",
-  "back",
-  "fetch"
-
+  "back"
 };
 
 int (*builtin_func[]) (char **) = {
@@ -36,8 +34,8 @@ int (*builtin_func[]) (char **) = {
   &tabsh_help,
   &tabsh_exit,
   &tabsh_env,
-  &tabsh_back,
-  &tabsh_fetch, 
+  &tabsh_back
+ 
 };
 
 int tabsh_num_builtins() {
@@ -60,7 +58,7 @@ int tabsh_back(char **args) {
     return 1;
   }
 }
-int tabsh_fetch(char **args) {
+int tabsh_fetch() {
   // Opening file
   FILE *file_ptr;
 
@@ -76,13 +74,14 @@ int tabsh_fetch(char **args) {
         return 1;
   }
 
-  printf("Content of the file are:-: \n");
+ 
 
   // Printing what is written in file
   // character by character using loop.
   while ((ch = fgetc(file_ptr)) != EOF) {
       printf("%c", ch);
   }
+  printf("\e[1;5m !! Development Software !!: Tread lightly.\033[m   \n");
   return 1;
 }
 int tabsh_cd(char **args)
@@ -356,7 +355,7 @@ void tabsh_loop(void)
   //free(hn);
 }
 int main() {
-  printf("warning: this is early development software!\nPrepare for bugs, missing features, and other nasty things.\n \033[1m \033[31m          YOU HAVE BEEN WARNED! \033[37m \033[0m \n");
+  tabsh_fetch();
   tabsh_loop();
   
   return 0;

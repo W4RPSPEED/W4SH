@@ -1,5 +1,5 @@
-compile = ["make", "-s"]
-run = "./tabsh"
+compile = ["sh", "./install.sh"]
+run = "./build/tabsh"
 entrypoint = "main.c"
 hidden = ["main", "main-debug", "**/*.o", "**/*.d", ".ccls-cache", "Makefile"]
 modules = ["c-clang14"]
