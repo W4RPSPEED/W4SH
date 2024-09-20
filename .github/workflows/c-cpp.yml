@@ -24,5 +24,13 @@ jobs:
         path: build/w4sh
         retention-days: 5
 
+    - name: Update nightly release
+      uses: eine/tip@master
+      with:
+            tag: nightly
+            rm: true
+            token: ${{ secrets.GITHUB_TOKEN }}
+            files: build/w4sh
+
    
     
